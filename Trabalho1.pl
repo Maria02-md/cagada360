@@ -56,7 +56,6 @@ simb_prop(A ou B, [B|S]):- not(simb_prop(A)),simb_prop(B),simb_prop(A,[B|S]).
 simb_prop(A ou B, [A|S]):- simb_prop(A),not(simb_prop(B)),simb_prop(B,[A|S]).
 simb_prop(A ou B, S):- not(simb_prop(A)),not(simb_prop(B)),simb_prop(A,S),simb_prop(B,S).
 
-/*luana*/
 
 
 exercicio1([F|R],L2):-
