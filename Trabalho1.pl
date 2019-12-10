@@ -142,11 +142,3 @@ list_vals_sat_list_form2([F|T],S,R):-val_sat_list_form(F,S,R),list_vals_sat_list
 
 
 
-
-
-
-
-
-
-
-
