@@ -11,19 +11,6 @@ LITERAL: ~q, q, ou seja, é o simbolo proposicional ou a negação desse
 */
 
 
-:-op(100, fy, 'neg').
-:-op(200, xfy, 'e').
-:-op(300, xfy, 'ou').
-:-op(400, xfy, 'imp').
-
-/*NOTAS
-{p, p → q, q} é representado da seguinte forma: [p, p imp q, q].
-SIMBOLO PROPOSICIONAL: p,q, ou seja, são simvolos simples
-LITERAL: ~q, q, ou seja, é o simbolo proposicional ou a negação desse
-         simbolo.
-*/
-
-
 /*Execicio1:
    F-formula de L¬,∧,∨,→
    X-simbolo proposicional
