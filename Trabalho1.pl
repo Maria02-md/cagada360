@@ -11,6 +11,19 @@ LITERAL: ~q, q, ou seja, é o simbolo proposicional ou a negação desse
 */
 
 
+:-op(100, fy, 'neg').
+:-op(200, xfy, 'e').
+:-op(300, xfy, 'ou').
+:-op(400, xfy, 'imp').
+
+/*NOTAS
+{p, p → q, q} é representado da seguinte forma: [p, p imp q, q].
+SIMBOLO PROPOSICIONAL: p,q, ou seja, são simvolos simples
+LITERAL: ~q, q, ou seja, é o simbolo proposicional ou a negação desse
+         simbolo.
+*/
+
+
 /*Execicio1:
    F-formula de L¬,∧,∨,→
    X-simbolo proposicional
@@ -30,19 +43,53 @@ conj(X e Y):-literal(X),literal(Y).
 disj(X ou Y):-literal(X),literal(Y).
 
 concatena([],L,L).
-concatena([X|R],L,[X|S]):-concatena(R,L,S) .
+concatena([X|R],L,[X|S]):-concatena(R,L,S).
+
+el_rep([],[]).
+el_rep([X|R],[X|S]):-not(membro(X,R)),el_rep(R,S).
+el_rep([X|R],S):-membro(X,R),el_rep(R,S).
 
 lista_s1([X1],[X1]):-simb_prop(X1).
 lista_s1([neg X1],[X1]):-simb_prop(X1).
+lista_s1([neg X1],L):-not(simb_prop(X1)),lista_s1([X1],L).
+
+
 lista_s1([X1 e X2],[X1,X2]):-simb_prop(X1),simb_prop(X2).
-lista_s1([X1 ou X2],[X1,X2]):-simb_prop(X1),simb_prop(X1).
-lista_s1([X1 imp X2],[X1,X2]):- simb_prop(X1),simb_prop(X2).
+lista_s1([X1 e X2],L):-not(simb_prop(X1)),simb_prop(X2),lista_s1([X1],S),concatena([X2],S,L).
+lista_s1([X1 e X2],L):-not(simb_prop(X2)),simb_prop(X1),lista_s1([X2],S),concatena([X1],S,L).
+lista_s1([X1 e X2],L):-not(simb_prop(X1)),not(simb_prop(X2)),lista_s1([X1],S),lista_s1([X2],R),concatena(S,R,L).
+
+
+lista_s1([X1 ou X2],[X1,X2]):-simb_prop(X1),simb_prop(X2).
+lista_s1([X1 ou X2],L):-not(simb_prop(X1)),simb_prop(X2),lista_s1([X1],S),concatena(S,[X2],L).
+lista_s1([X1 ou X2],L):-not(simb_prop(X2)),simb_prop(X1),lista_s1([X2],S),lista_s1([X1],R),concatena(R,S,L).
+lista_s1([X1 ou X2],L):-not(simb_prop(X1)),not(simb_prop(X2)),lista_s1([X1],S),lista_s1([X2],R),concatena(S,R,L).
+
+lista_s1([X1 imp X2],[X1,X2]):-simb_prop(X1),simb_prop(X2).
+lista_s1([X1 imp X2],L):-not(simb_prop(X1)),simb_prop(X2),lista_s1([X1],S),concatena(S,[X2],L).
+lista_s1([X1 imp X2],L):-not(simb_prop(X2)),simb_prop(X1),lista_s1([X2],S),lista_s1([X1],R),concatena(R,S,L).
+lista_s1([X1 imp X2],L):-not(simb_prop(X1)),not(simb_prop(X2)),lista_s1([X1],S),lista_s1([X2],R),concatena(R,S,L).
+
+
 lista_s1([X1|F],L):-simb_prop(X1),lista_s1(F,L2),concatena([X1],L2,L).
 lista_s1([neg X1|F],L):-simb_prop(X1),lista_s1(F,L2),concatena([X1],L2,L).
-lista_s1([X1 e X2|F],L):-simb_prop(X1),simb_prop(X2),lista_s1(F,L2),concatena([X1,X2],L2,L).
-lista_s1([X1 ou X2|F],L):-simb_prop(X1),simb_prop(X2),lista_s1(F,L2),concatena([X1,X2],L2,L).
-lista_s1([X1 imp X2|F],L):-simb_prop(X1),simb_prop(X2),lista_s1(F,L2),concatena([X1,X2],L2,L).
+lista_s1([neg X1|F],L):-not(simb_prop(X1)),lista_s1([X1],S),lista_s1(F,L2),concatena(S,L2,L).
 
+lista_s1([X1 e X2|F],L):-simb_prop(X1),simb_prop(X2),lista_s1(F,L2),concatena([X1,X2],L2,L).
+lista_s1([X1 e X2|F],L):-not(simb_prop(X1)),simb_prop(X2),lista_s1([X1],S),concatena(S,[X2],L2),lista_s1(F,L3),concatena(L2,L3,L).
+lista_s1([X1 e X2|F],L):-not(simb_prop(X2)),simb_prop(X1),lista_s1([X2],S),concatena(S,[X1],L2),lista_s1(F,L3),concatena(L2,L3,L).
+lista_s1([X1 e X2|F],L):-not(simb_prop(X1)),not(simb_prop(X2)),lista_s1([X1],S),lista_s1([X2],R),concatena(S,R,L2),lista_s1(F,L3),concatena(L2,L3,L).
+
+lista_s1([X1 ou X2|F],L):-simb_prop(X1),simb_prop(X2),lista_s1(F,L2),concatena([X1,X2],L2,L).
+lista_s1([X1 ou X2|F],L):-not(simb_prop(X1)),simb_prop(X2),lista_s1([X1],S),concatena(S,[X2],L2),lista_s1(F,L3),concatena(L2,L3,L).
+lista_s1([X1 ou X2|F],L):-not(simb_prop(X2)),simb_prop(X1),lista_s1([X2],S),concatena(S,[X1],L2),lista_s1(F,L3),concatena(L2,L3,L).
+lista_s1([X1 ou  X2|F],L):-not(simb_prop(X1)),not(simb_prop(X2)),lista_s1([X1],S),lista_s1([X2],R),concatena(S,R,L2),lista_s1(F,L3),concatena(L2,L3,L).
+
+
+lista_s1([X1 imp X2|F],L):-simb_prop(X1),simb_prop(X2),lista_s1(F,L2),concatena([X1,X2],L2,L).
+lista_s1([X1 imp X2|F],L):-not(simb_prop(X1)),simb_prop(X2),lista_s1([X1],S),concatena(S,[X2],L2),lista_s1(F,L3),concatena(L2,L3,L).
+lista_s1([X1 imp  X2|F],L):-not(simb_prop(X2)),simb_prop(X1),lista_s1([X2],S),concatena([X1],S,L2),lista_s1(F,L3),concatena(L2,L3,L).
+lista_s1([X1 imp  X2|F],L):-not(simb_prop(X1)),not(simb_prop(X2)),lista_s1([X1],S),lista_s1([X2],R),concatena(S,R,L2),lista_s1(F,L3),concatena(L2,L3,L).
 
 
 /*tem o valor verdadeiro se N é
@@ -78,6 +125,12 @@ val_sat_list_form2([F|T],S,V):-val_sat_list_form(F,S,V),val_sat_list_form2(T,S,V
 list_vals_sat_list_form([F],S,R):-val_sat_list_form(F,S,R),write(R).
 list_vals_sat_list_form2([F|T],S,R):-val_sat_list_form(F,S,R),list_vals_sat_list_form2(T,S,R).
 */
+
+
+
+
+
+
 
 
 
