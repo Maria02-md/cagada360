@@ -89,7 +89,7 @@ N da lista L*/
 enesimo(1,[X|L],X).
 enesimo(N,[X|L],Y):-enesimo(N1,L,Y), N is N1+1.
 
-
+/*i*/
 valor_log(F,S,L,V):-enesimo(N,S,F),enesimo(N,L,V). /*Se F é o elemento que esta na posição N da lista S, então o valor lógico de F é o valor que esta na posição N da lista L*/
 valor_log(neg X,S,L,0):-valor_log(X,S,L,1).
 valor_log(neg X,S,L,1):-valor_log(X,S,L,0).
@@ -103,29 +103,40 @@ valor_log(X ou Y,S,L,1):-valor_log(X,S,L,1).
 valor_log(X ou Y,S,L,1):-valor_log(Y,S,L,1).
 valor_log(X ou Y,S,L,0):-valor_log(X,S,L,0),valor_log(Y,S,L,0).
 
-
-/*val_sat_list_form(F,S,V):-enesimo(N,S,F),enesimo(N,F,V).ACABEI DE REPARAR QUE ESTA LINHA DE CODIGO NÃO ESTA AQUI A FAZER NADA*/
+/*ii*/
 val_sat_list_form(F,S,V):- valor_log(F,S,V,1).
 val_sat_list_form2([],S,V).
 val_sat_list_form2([F|T],S,V):-val_sat_list_form(F,S,V),val_sat_list_form2(T,S,V).
 
+/*iii*/
+/*Acrescentar uma lista, V (de valorações) á lista L*/
+acrescenta([],[],[]).
+acrescenta([],[X1|R],[X1|S]):-acrescenta([],R,S).
+acrescenta([X1|R],L,[X1|S]):-acrescenta(R,L,S).
 
+elimina([],R).
+elimina([X1|R],R).
+/*programa que permita obter, para um qualquer
+n´umero inteiro n˜ao negativo N dado, uma lista formada por todas as
+listas de comprimento N que s˜ao compostas apenas por zeros e uns.*/
+lista_n_0s_e_1s(0,[]). /* Dado um inteiro não negativo N, esta função tem um valor verdadeiro se e so se L for uma lista de comprimento N composta apenas por 0 e por 1.*/
+lista_n_0s_e_1s(N,[0|R]):-N>0, N1 is N-1, lista_n_0s_e_1s(N1,R).
+lista_n_0s_e_1s(N,[1|R]):-N>0, N1 is N-1, lista_n_0s_e_1s(N1,R).
 
+todas_listas_n_0s_e_1s(N,T):-findall(L,lista_n_0s_e_1s(N,L),T). /*Sendo N um numero inteiro não negativo o output é uma lista de listas com comprimento N que são compostas apenas por 0s e 1s.*/
 
-/*
-list_vals_sat_list_form([F],S,R):-val_sat_list_form(F,S,R),write(R).
-list_vals_sat_list_form2([F|T],S,R):-val_sat_list_form(F,S,R),list_vals_sat_list_form2(T,S,R).
-*/
+/*Dá o comprimento de uma lista l*/
+comprimento([],0).
+comprimento([_|X],N):-comprimento(X,N1),N is N1+1.
 
+/*Dá todas as valorações possíveis para uma determinada lista de simbolos proposicionais, de acordo com o seu tamanho*/
+lista_val([X|Y],T):-comprimento([X|Y],N),todas_listas_n_0s_e_1s(N,T).
 
+/*Dada uma lista de conjuntos obter uma lista formada por todos os conjuntos da lista inicial que atribuem a valoração 1 à formula F*/
+/*[X1|T] corresponde à minha lista com todas as valorações, faço isto ao fazer lista_val(S,[X1|T]) estou a guardar em L o T.*/
 
+aux_lista_val_12([],F,S,[]).
+aux_lista_val_12([X1|L],F,S,[X1|L2]):-valor_log(F,S,X1,1),aux_lista_val_12(L,F,S,L2).
+aux_lista_val_12([X1|L],F,S,L2):-not(valor_log(F,S,X1,1)),aux_lista_val_12(L,F,S,L2).
 
-
-
-
-
-
-
-
-
-
+lista_val_1(F,S,V):-lista_val(S,T),aux_lista_val_12(T,F,S,V).
