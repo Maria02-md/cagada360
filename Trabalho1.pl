@@ -116,6 +116,11 @@ acrescenta([X1|R],L,[X1|S]):-acrescenta(R,L,S).
 
 elimina([],R).
 elimina([X1|R],R).
+
+/*tem lista de formulas e une-as com e*/
+junta_form([X|[]],X).
+junta_form([R|L],S):-junta_form(L,P), S= R e P.
+
 /*programa que permita obter, para um qualquer
 n´umero inteiro n˜ao negativo N dado, uma lista formada por todas as
 listas de comprimento N que s˜ao compostas apenas por zeros e uns.*/
@@ -132,11 +137,19 @@ comprimento([_|X],N):-comprimento(X,N1),N is N1+1.
 /*Dá todas as valorações possíveis para uma determinada lista de simbolos proposicionais, de acordo com o seu tamanho*/
 lista_val([X|Y],T):-comprimento([X|Y],N),todas_listas_n_0s_e_1s(N,T).
 
-/*Dada uma lista de conjuntos obter uma lista formada por todos os conjuntos da lista inicial que atribuem a valoração 1 à formula F*/
-/*[X1|T] corresponde à minha lista com todas as valorações, faço isto ao fazer lista_val(S,[X1|T]) estou a guardar em L o T.*/
-
+/*Recebe a lista de todas as valorações, a formula, a lista de simbolos proposicionais e retorna a lista com as valorações que satisfazer a formula*/
 aux_lista_val_12([],F,S,[]).
 aux_lista_val_12([X1|L],F,S,[X1|L2]):-valor_log(F,S,X1,1),aux_lista_val_12(L,F,S,L2).
 aux_lista_val_12([X1|L],F,S,L2):-not(valor_log(F,S,X1,1)),aux_lista_val_12(L,F,S,L2).
 
+/*Serve para que se possa gerar a lista com todas as valorações possíveis sendo que retorna as que verificam*/
+
 lista_val_1(F,S,V):-lista_val(S,T),aux_lista_val_12(T,F,S,V).
+
+lista_val_12(F,S,L):-findall(V,lista_val_1(F,S,V),N),el_rep(N,L).
+
+final([]).
+final(L):-lista_s1(L,S),junta_form(L,F),lista_val_12(F,S,M),write(S),write(M).
+
+
+
