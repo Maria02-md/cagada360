@@ -142,6 +142,9 @@ aux_lista_val_12([],F,S,[]).
 aux_lista_val_12([X1|L],F,S,[X1|L2]):-valor_log(F,S,X1,1),aux_lista_val_12(L,F,S,L2).
 aux_lista_val_12([X1|L],F,S,L2):-not(valor_log(F,S,X1,1)),aux_lista_val_12(L,F,S,L2).
 
+elimina_listas2(H,S):-H=[P|T], S=[P|T].
+elimina_listas([L|T],H):-L=[R|S], H=[R|S], elimina_listas2(H,P).
+
 /*Serve para que se possa gerar a lista com todas as valorações possíveis sendo que retorna as que verificam*/
 
 lista_val_1(F,S,V):-lista_val(S,T),aux_lista_val_12(T,F,S,V).
@@ -149,7 +152,7 @@ lista_val_1(F,S,V):-lista_val(S,T),aux_lista_val_12(T,F,S,V).
 lista_val_12(F,S,L):-findall(V,lista_val_1(F,S,V),N),el_rep(N,L).
 
 final([]).
-final(L):-lista_s1(L,S),junta_form(L,F),lista_val_12(F,S,M),write(S),write(M).
+final(L):-lista_s1(L,S),junta_form(L,F),lista_val_12(F,S,M),elimina_listas(M,R),write(S),nl,write(R).
 
 
 
