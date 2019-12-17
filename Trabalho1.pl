@@ -19,9 +19,6 @@ LITERAL: ~q, q, ou seja, é o simbolo proposicional ou a negação desse
    V-valoração da fomula
 */
 
-
-
-
 simb_prop(P):- not(P = neg  X),not(P = X  e  Y), not(P = X ou Y), not(P = X imp Y).
 literal( X ):- simb_prop(X) .
 literal( neg X ):- simb_prop(X) .
@@ -153,3 +150,36 @@ final(L):-lista_s1(L,S),junta_form(L,F),lista_val_12(F,S,M),write(S),write(M).
 
 
 
+
+
+
+
+
+/*EXERCICIO 2: Verifica se é ou não consequencia semnatica e manda um exemplo de valoração caso não o seja */
+
+intersect([],L,[]).
+intersect([X|R],L,[X|Z]):-membro(X,L),intersect(R,L,Z).
+intersect([X|R],L,Z):-not(membro(X,L)),intersect(R,L,Z).
+
+
+/*Recebe a lista de todas as valorações, a formula, a lista de simbolos proposicionais e retorna a lista com as valorações que não satisfazem a formula*/
+lista_val_nao_verifica([],F,S,[]).
+lista_val_nao_verifica([X1|L],F,S,[X1|L2]):-valor_log(F,S,X1,0),lista_val_nao_verifica(L,F,S,L2).
+lista_val_nao_verifica([X1|L],F,S,L2):-not(valor_log(F,S,X1,0)),lista_val_nao_verifica(L,F,S,L2).
+
+
+/*Serve para que se possa gerar a lista com todas as valorações possíveis sendo que retorna as que não verificam*/
+lista_val_0(F,S,V):-lista_val(S,T),lista_val_nao_verifica(T,F,S,V).
+lista_val_02(F,S,L):-findall(V,lista_val_0(F,S,V),N),el_rep(N,L).
+
+/*Recebe uma lista de listas que verificam uma dada formula e retorna essas valorações concatenadas numa so lista */
+lista_concatenada([],[]):-!.
+lista_concatenada([L|Ls],ListaJunta):-!,lista_concatenada(L,NewL),lista_concatenada(Ls,NewLs),concatena(NewL, NewLs, ListaJunta). /*Concatena uma lista de listas*/
+lista_concatenada(L,[L]).
+
+
+consequencia_semantica_aux(T,R1,M,M2,S,R2):- valor_log(T,S,R1,1), write('É consequencia semantica').
+consequencia_semantica_aux(T,R1,M,M2,S,R2):-valor_log(T,S,R1,0), intersect(M,M2,L), write(' Não é consequencia semantica, valorações: '),write(L).
+
+
+consequencia_semantica(F,T):-lista_s1(F,S), junta_form(F,H), lista_val_1(H,S,M),lista_concatenada(M,R1),lista_val_0(T,S,M2),lista_concatenada(M2,R2),consequencia_semantica_aux(T,R1,M,M2,S,R2). /*R1 é a lista de valorações concatenadas que satisfaz F, M é a lista das valorações que satisfaz F sem serem concatenadas e R2 é a lista que não satisfaz T, M2 é a lista das valorações concatenadas que não satisfazem T*/
