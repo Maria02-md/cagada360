@@ -181,5 +181,37 @@ lista_concatenada(L,[L]).
 consequencia_semantica_aux(T,R1,M,M2,S,R2):- valor_log(T,S,R1,1), write('É consequencia semantica').
 consequencia_semantica_aux(T,R1,M,M2,S,R2):-valor_log(T,S,R1,0), intersect(M,M2,L), write(' Não é consequencia semantica, valorações: '),write(L).
 
-
 consequencia_semantica(F,T):-lista_s1(F,S), junta_form(F,H), lista_val_1(H,S,M),lista_concatenada(M,R1),lista_val_0(T,S,M2),lista_concatenada(M2,R2),consequencia_semantica_aux(T,R1,M,M2,S,R2). /*R1 é a lista de valorações concatenadas que satisfaz F, M é a lista das valorações que satisfaz F sem serem concatenadas e R2 é a lista que não satisfaz T, M2 é a lista das valorações concatenadas que não satisfazem T*/
+
+
+
+
+/*Exercicio 3*/
+
+/*Fiz esta consequencia sematica adptada so para mandar true or false */
+consequencia_semantica_adap([],[]).
+consequencia_semantica_adap(F,T):-lista_s1(F,S),junta_form(F,H), lista_val_12(H,S,M), lista_concatenada(M,R), valor_log(T,S,R,1).
+
+
+junta_elem_listaconj(E,[],[]).
+junta_elem_listaconj(E,[X|R],[[E|X]|S]):-junta_elem_listaconj(E,R,S).
+
+/*Com esta função temos as partes de um conjunto*/
+partes([],[[]]).
+partes([X|R],P):-partes(R,S),junta_elem_listaconj(X,S,T),concatena(S,T,P).
+
+/*Recebe como argumentos a lista de formulas, conjunto(L), Uma formula F para verificar se é consequencia semantica e devolve uma lista apenas comaquelas formulas das partes de L que são consequencia semantica, C.*/
+
+partes_cs_aux([],F,[]).
+partes_cs_aux([P1|P],F,[P1|C]):-consequencia_semantica_adap(P1,F), partes_cs_aux(P,F,C).
+partes_cs_aux([P1|P],F,C):-not(consequencia_semantica_adap(P1,F)), partes_cs_aux(P,F,C).
+partes_cs(L,F,C):-partes(L,P),partes_cs_aux(P,F,C).
+
+
+
+
+
+
+
+
+
