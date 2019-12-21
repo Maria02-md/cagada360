@@ -207,38 +207,3 @@ partes_cs_aux([P1|P],F,[P1|C]):-consequencia_semantica_adap(P1,F), partes_cs_aux
 partes_cs_aux([P1|P],F,C):-not(consequencia_semantica_adap(P1,F)), partes_cs_aux(P,F,C).
 partes_cs(L,F,C):-partes(L,P),partes_cs_aux(P,F,C).
 
-
-/*Um conjunto minimal é um conjunto que não contem nenhum subconjunto
- *Um conjunto deixa de ser minimal a partir do momento que contem algum
- conjunto
- Um conjunto para ser minimal não precisa de estar contido noutro */
-
-
-membro_lista(L1,[L1|R]).
-membro_lista(L1,[Y|R]):-membro_lista(L1,R).
-
-
-/*Quero que, tendo o conjuntos das partes de A(P), retire o A pois o A tem que ser membro de L */
-partes_adap(A,[],P).
-partes_adap(A,[A|P],P).
-partes_adap(A,[Y|P],P2):-partes_adap(A,P,P2).
-
-/*Esta função faz as partes de A e depois, das partes de A (P) retira o proprio A (P2) porque na funão minimal é necessario que A faça parte de L. Assim apos fazer as partes de A, vai á lista L e vai verificando se cada elemento de L não é membro das partes de A(que não contem o A)(P2). Manda, assim, true se os elementos de L não estiverem contidos em A, não contando com o elemento de L que é igual ao A.*/
-nao_contido([],A).
-nao_contido([X1|L],A):-partes(A,P), partes_adap(A,P,P2),not(membro(X1,P2)),nao_contido(L,A). /*manda true quando ha elementos em L contidos em A*/
-
-
-/*É true se A esta em L e nenhum dos elementos que esta em L é subconjunto de A*/
-minimal(A,L):-membro_lista(A,L), nao_contido(L,A).
-
-
-/*ii esta mal ainda
-/*recebe uma lista de listas e seleciona aquelas que são minimais(M) */
-list_minimais([],[]).
-list_minimais([X|L],[X|M]):-minimal(X,L),list_minimais(L,M).
-list_minimais([X|L],M):-not(minimal(X,L)),list_minimais(L,M).
-
-*/
-
-
-
