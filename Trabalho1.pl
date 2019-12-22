@@ -207,3 +207,25 @@ partes_cs_aux([P1|P],F,[P1|C]):-consequencia_semantica_adap(P1,F), partes_cs_aux
 partes_cs_aux([P1|P],F,C):-not(consequencia_semantica_adap(P1,F)), partes_cs_aux(P,F,C).
 partes_cs(L,F,C):-partes(L,P),partes_cs_aux(P,F,C).
 
+/*Recebe como argumentos uma lista (que representa um conjunto) e uma lista de listas (que representam conjuntos) e verifica se a lista está contida na lista de listas*/
+a_contido([],M).
+a_contido([R|S],M):- membro(R,M), a_contido(S,M).
+a_contidoaux([R|S],L):-lista_concatenada(L,M), a_contido([R|S],M).
+
+elimina(X,[],[]).
+elimina(X,[X|L],L1):- elimina(X,L,L1).
+elimina(X,[Y|L],[Y|L1]):- not(Y=X), elimina(X,L,L1).
+
+conjuntos_iguais([],[]).
+conjuntos_iguais([X|R],B):-membro(X,B), elimina(X,R,S), elimina(X,B,T), conjuntos_iguais(S,T).
+
+subconj([],_).
+subconj([X|L],B):-membro(X,B),subconj(L,B).
+
+/*Recebe como argumentos uma lista (que representa um conjunto) e uma lista de listas (que representam conjuntos) e verifica se cada um dos argumentos da lista de listas está contido na outra lista*/
+l_n_contido(A,[]):-not(conjuntos_iguais(A,[])).
+l_n_contido(A,[L|S]):-lista_concatenada(L,M),not(conjuntos_iguais(A,M)),not(subconj(M,A)),l_n_contido(A,S).
+
+/*Recebe como argumentos uma lista (que representa um conjunto) e uma lista de listas (que representam conjuntos) e verifica se A é conjunto minimal del L*/
+minimal(A,L):-a_contidoaux(A,L),l_n_contido(A,L).
+
