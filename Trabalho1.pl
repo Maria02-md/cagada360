@@ -185,20 +185,18 @@ consequencia_semantica(F,T):-lista_s1(F,S), junta_form(F,H), lista_val_1(H,S,M),
 
 
 
-/*
-problema:
-O flatten fica com a lista:[0,1,1,0,1,1], ele tira todos os parentesis.
-Só funciona com uma unica valoração
-
-*/
-
-
 
 /*Exercicio 3*/
 
+elimina_listas2(H,S):-H=[P|T],S=[P|T].
+elimina_listas([L|T],H):-L=[R|S],H=[R|S],elimina_listas2(H,P).
+
+valor_log_a(F,S,[],V).
+valor_log_a(F,S,[L|T],V):-valor_log(F,S,L,V),valor_log_a(F,S,T,V).
+
 /*Fiz esta consequencia sematica adptada so para mandar true or false */
 consequencia_semantica_adap([],[]).
-consequencia_semantica_adap(F,T):-lista_s1(F,S),junta_form(F,H), lista_val_12(H,S,M), lista_concatenada(M,R), valor_log(T,S,R,1).
+consequencia_semantica_adap(F,T):-lista_s1(F,S),junta_form(F,H), lista_val_12(H,S,M), elimina_listas(M,R), valor_log_a(T,S,R,1).
 
 
 junta_elem_listaconj(E,[],[]).
@@ -241,32 +239,6 @@ lista_minimais4([X1|L],[Y1|L2],M):-not(nao_contido4(L,X1)),not(nao_contido4([Y1|
 
 /*Recebe como argumentos uma lista de formulas,F, uma formula F1 (para selecionar os elementos de F que são consequencia semantica */
 exercicio3(F,F1):-partes_cs(F,F1,C),lista_minimais4(C,[],M),write(M).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
