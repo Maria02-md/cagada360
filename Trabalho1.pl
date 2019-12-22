@@ -245,3 +245,26 @@ exercicio3(F,F1):-partes_cs(F,F1,C),lista_minimais4(C,[],M),write(M).
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
