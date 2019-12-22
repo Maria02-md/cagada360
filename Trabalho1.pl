@@ -186,6 +186,12 @@ consequencia_semantica(F,T):-lista_s1(F,S), junta_form(F,H), lista_val_1(H,S,M),
 
 
 
+
+
+
+
+
+
 /*Exercicio 3*/
 
 /*Fiz esta consequencia sematica adptada so para mandar true or false */
@@ -206,4 +212,56 @@ partes_cs_aux([],F,[]).
 partes_cs_aux([P1|P],F,[P1|C]):-consequencia_semantica_adap(P1,F), partes_cs_aux(P,F,C).
 partes_cs_aux([P1|P],F,C):-not(consequencia_semantica_adap(P1,F)), partes_cs_aux(P,F,C).
 partes_cs(L,F,C):-partes(L,P),partes_cs_aux(P,F,C).
+
+
+/*Um conjunto minimal é um conjunto que não contem nenhum subconjunto
+ *Um conjunto deixa de ser minimal a partir do momento que contem algum
+ conjunto
+ Um conjunto para ser minimal não precisa de estar contido noutro */
+
+acrescenta_adap4(X,L2,[X|L2]).
+
+
+nao_contido4([],P3).
+nao_contido4([X1|L],A):-partes(A,P),not(membro(X1,P)),nao_contido4(L,A).
+
+
+lista_minimais4([X1],[Y1,L2],[X1]):-nao_contido4([Y1|L2],X1),acrescenta_adap4(X1,[Y1|L2],L3). /*Base de indução: quando so tem um ultimo elementona lista, L2 esta cheia e os elementos de L2 nao estão contidos em X1. Logo X1 é um minimal.*/
+lista_minimais4([X1],[Y1|L2],[]):-not(nao_contido4([Y1|L2],X1)),acrescenta_adap4(X1,[Y1|L2],L3). /*Base de inducao: quando so tem um ultimo elemento na lista, L2 esta cheia e os elementos de L2 estão contidos em X1. Logo X1 não é um minimal*/
+lista_minimais4([X1|L],[],[X1|M]):-nao_contido4(L,X1),acrescenta_adap4(X1,[],L3),lista_minimais4(L,L3,M). /*nenhum elem de L esta contido em X1 e a L2 é vazia*/
+lista_minimais4([X1|L],[],M):-not(nao_contido4(L,X1)),acrescenta_adap4(X1,[],L3),lista_minimais4(L,L3,M). /*elem de L esta contido em X1 e a lista L2 esta vazia*/
+lista_minimais4([X1|L],[Y1|L2],[X1|M]):-nao_contido4(L,X1),nao_contido4([Y1|L2],X1),acrescenta_adap4(X1,[Y1|L2],L3),lista_minimais4(L,L3,M). /*nenhum elem de L esta contido em X1 e a L2 nao vazia*/
+lista_minimais4([X1|L],[Y1|L2],M):-not(nao_contido4(L,X1)),nao_contido4([Y1|L2],X1),acrescenta_adap4(X1,[Y1|L2],L3),lista_minimais4(L,L3,M). /*Elem da lista L esta contido em X1 mas nenhum elem de L2 esta contido em X1.X1 deixa de ser minimal porque tem elementos de outros conjuntos contidosnele logo nao vai para a lista M.*/
+lista_minimais4([X1|L],[Y1|L2],M):-nao_contido4(L,X1),not(nao_contido4([Y1|L2],X1)),acrescenta_adap4(X1,[Y1|L2],L3),lista_minimais4(L,L3,M). /*Elemda lista L2 esta contido em X1 mas nenhum elem de L esta contido em X1. X1 deixa de ser minimal porque tem elementos de outros conjuntos contidos nele, logo nao vai para a lista M.*/
+lista_minimais4([X1|L],[Y1|L2],M):-not(nao_contido4(L,X1)),not(nao_contido4([Y1|L2],X1)),acrescenta_adap4(X1,[Y1|L2],L3),lista_minimais4(L,L3,M). /*Elem da lista L e L2 estão contidos em X1. X1 deixa de ser um minimal porque tem elementos de outros conjuntos contidos nele, logo nao vai para a lista M.*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
